@@ -1,12 +1,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: postgres-pvc
-  namespace: k8s
+  name: eks-efs-pvc
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   storageClassName: eks-efs-sc
   resources:
     requests:
-      storage: 1Gi
+      storage: 5Gi
