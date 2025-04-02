@@ -8,4 +8,4 @@ spec:
   storageClassName: eks-efs-sc
   resources:
     requests:
-      storage: 5Gi
+      storage: 1Gi
