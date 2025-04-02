@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: backend-pvc # Name of the pvc
+  namespace: k8s # Namespace where the PVC will be created
+spec:
+  accessModes:
+    - ReadWriteOnce # Allows the volume to be mounted as read-write by a single node
+  resources:
+    requests:
+      storage: 1Gi # Requesting 1Gi of storage
