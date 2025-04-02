@@ -5,7 +5,7 @@ metadata:
   namespace: k8s
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   storageClassName: eks-efs-sc
   resources:
     requests:
