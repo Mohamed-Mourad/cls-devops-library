@@ -47,5 +47,5 @@ spec:
       volumes:
         - name: postgres-storage
           persistentVolumeClaim:
-            claimName: postgres-pvc
+            claimName: eks-efs-pvc
 
