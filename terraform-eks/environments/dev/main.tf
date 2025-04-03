@@ -20,6 +20,14 @@ resource "aws_security_group" "worker_sg" {
   }
 
   ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow HTTP traffic"
+  }
+
+  ingress {
   from_port   = 10250
   to_port     = 10250
   protocol    = "tcp"
