@@ -20,6 +20,9 @@ spec:
       containers:
         - name: postgres-container
           image: postgres:14
+          securityContext:
+            runAsUser: 999
+            runAsGroup: 999
           command:
             - "postgres"
             - "-c"
@@ -49,4 +52,3 @@ spec:
         - name: postgres-storage
           persistentVolumeClaim:
             claimName: postgres-pvc
-
