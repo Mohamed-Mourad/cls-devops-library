@@ -70,3 +70,8 @@ variable "extra_tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "worker_sg_id" {
+  description = "worker sg id"
+  type = string
+}

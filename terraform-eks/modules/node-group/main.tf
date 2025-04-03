@@ -43,33 +43,6 @@ resource "aws_iam_role_policy_attachment" "efs_access_policy" {
   role       = aws_iam_role.eks_node_role.name
 }
 
-# Security group for worker nodes (allows EFS access and SSH)
-resource "aws_security_group" "worker_sg" {
-  name        = "eks-worker-sg"
-  description = "Security group for EKS worker nodes"
-  vpc_id      = var.vpc_id
-
-  # Allow SSH from specified security groups
-  ingress {
-    from_port       = 22
-    to_port         = 22
-    protocol        = "tcp"
-    security_groups = var.remote_access_security_group_ids
-  }
-
-  # Allow all outbound traffic (EFS, EKS API, etc.)
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "eks-worker-sg"
-  }
-}
-
 # Launch template with custom security group and instance configuration
 resource "aws_launch_template" "this" {
   name_prefix   = "eks-worker-"
@@ -84,7 +57,7 @@ resource "aws_launch_template" "this" {
     }
   }
 
-  vpc_security_group_ids = [aws_security_group.worker_sg.id]
+  vpc_security_group_ids = [var.worker_sg_id]
 }
 
 # Create the EKS Node Group using the launch template
