@@ -15,18 +15,9 @@ spec:
       labels:
         app: postgres
     spec:
-      securityContext:
-        fsGroup: 999
       containers:
         - name: postgres-container
           image: postgres:14
-          securityContext:
-            runAsUser: 999
-            runAsGroup: 999
-          command:
-            - "postgres"
-            - "-c"
-            - "data_directory_mode=0777"
           env:
             - name: POSTGRES_USER
               valueFrom:
@@ -52,3 +43,4 @@ spec:
         - name: postgres-storage
           persistentVolumeClaim:
             claimName: postgres-pvc
+
