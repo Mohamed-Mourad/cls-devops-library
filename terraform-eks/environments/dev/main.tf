@@ -65,7 +65,7 @@ module "efs" {
   vpc_id           = module.vpc.vpc_id
   subnet_ids       = module.vpc.private_subnets
   eks_worker_sg_id = aws_security_group.worker_sg.id
-  posix_uid        = 1000
-  posix_gid        = 1000
+  posix_uid        = 999
+  posix_gid        = 999
 }
 
