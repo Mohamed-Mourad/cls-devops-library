@@ -33,7 +33,7 @@ pipeline {
                   }
             }
         }
-        stage('Deploy to EKS') {
+        stage('Create namespace') {
             steps {
                 withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
                 credentialsId: 'aws-credentials']]) {
@@ -41,7 +41,43 @@ pipeline {
                         sh '''
                             echo "Creating namespace (if not exists)..."
                             kubectl create namespace ${K8S_NAMESPACE} || echo "Namespace ${K8S_NAMESPACE} already exists"
+                        '''
+                    }
+                }
+            }
+        }
+        stage('Apply kube crt in k8s') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+                credentialsId: 'aws-credentials']]) {
+                    withEnv(["KUBECONFIG=${env.WORKSPACE}/kubeconfig_tmp"]) {
+                        script {
+                            // Retrieve the full configmap YAML
+                            def configmapYaml = sh(script: "kubectl get configmap kube-root-ca.crt -n kube-public -o yaml", returnStdout: true).trim()
                             
+                            // Extract the ca.crt field
+                            def caCert = sh(script: "echo '${configmapYaml}' | grep 'ca.crt' | awk '{print \$2}'", returnStdout: true).trim()
+        
+                            // Check if ca.crt was extracted successfully
+                            if (caCert) {
+                                // Create or update the configmap with the extracted certificate
+                                sh """
+                                    kubectl create configmap kube-root-ca.crt --from-literal=ca.crt="${caCert}" -n ${K8S_NAMESPACE} --dry-run=client -o yaml | kubectl apply -f -
+                                """
+                            } else {
+                                error("The 'ca.crt' field is missing from the kube-root-ca.crt ConfigMap in the kube-public namespace.")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        stage('Deploy to EKS') {
+            steps {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
+                credentialsId: 'aws-credentials']]) {
+                    withEnv(["KUBECONFIG=${env.WORKSPACE}/kubeconfig_tmp"]) {
+                        sh '''
                             echo "Applying persistent volume and claims..."
                             kubectl apply -f k8s/efs-storageclass.yaml
                             kubectl apply -f k8s/efs-pv.yaml
@@ -49,13 +85,11 @@ pipeline {
                             
                             echo "Deploying Postgres resources..."
                             kubectl apply -f k8s/postgres.yaml -n ${K8S_NAMESPACE}
-                            kubectl apply -f k8s/postgres-pvc.yaml -n ${K8S_NAMESPACE}
                             kubectl apply -f k8s/postgres-service.yaml -n ${K8S_NAMESPACE}
                             kubectl apply -f k8s/postgres-secret.yaml -n ${K8S_NAMESPACE}
                             
                             echo "Deploying Backend resources..."
                             kubectl apply -f k8s/backend.yaml -n ${K8S_NAMESPACE}
-                            kubectl apply -f k8s/backend-pvc.yaml -n ${K8S_NAMESPACE}
                             kubectl apply -f k8s/backend-service.yaml -n ${K8S_NAMESPACE}
                             
                             echo "Deploying Ingress configuration..."
