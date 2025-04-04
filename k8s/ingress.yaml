@@ -4,17 +4,19 @@ metadata:
   name: lib-ingress
   namespace: k8s
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: / # Ensures requests are properly routed
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing # Public-facing ALB
+    alb.ingress.kubernetes.io/target-type: ip # Use "instance" if using EC2 workers
+    alb.ingress.kubernetes.io/healthcheck-path: / # Adjust based on your app
 spec:
   rules:
-    - host: library.local # Domain name for accessing the service
-      http:
+    - http:
         paths:
-          - path: / # Path to route to backend
+          - path: /
             pathType: Prefix
             backend:
               service:
-                name: backend-service # Backend service name
+                name: backend-service
                 port:
-                  number: 5000 # Port where the backend serivce is exposed
-
+                  number: 5000
+                  

@@ -28,8 +28,15 @@ resource "aws_security_group" "worker_sg" {
   }
 
   ingress {
-  from_port   = 10250
-  to_port     = 10250
+    from_port   = 10250
+    to_port     = 10250
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+}
+
+  ingress {
+  from_port   = 5000
+  to_port     = 5000
   protocol    = "tcp"
   cidr_blocks = ["0.0.0.0/0"]
 }
@@ -77,3 +84,12 @@ module "efs" {
   posix_gid        = 999
 }
 
+module "load_balancer" {
+  source               = "../../modules/load-balancer"
+  oidc_provider_arn    = module.eks.oidc_provider_arn
+
+  depends_on = [
+    module.eks,
+    module.node_group
+  ]
+}
