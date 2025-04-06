@@ -6,7 +6,7 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing # Public-facing ALB
-    alb.ingress.kubernetes.io/target-type: ip # Use "instance" if using EC2 workers
+    alb.ingress.kubernetes.io/target-type: EC2 # Use "instance" if using EC2 workers
     alb.ingress.kubernetes.io/healthcheck-path: / # Adjust based on your app
 spec:
   rules:
