@@ -4,11 +4,13 @@ metadata:
   name: lib-ingress
   namespace: k8s
   annotations:
+    # fine to keep for backwards‑compatibility
     kubernetes.io/ingress.class: alb
-    alb.ingress.kubernetes.io/scheme: internet-facing # Public-facing ALB
-    alb.ingress.kubernetes.io/target-type: EC2 # Use "instance" if using EC2 workers
-    alb.ingress.kubernetes.io/healthcheck-path: / # Adjust based on your app
+    alb.ingress.kubernetes.io/scheme: internet‑facing
+    alb.ingress.kubernetes.io/target-type: instance
+    alb.ingress.kubernetes.io/healthcheck-path: /
 spec:
+  ingressClassName: alb                   # ← add this
   rules:
     - http:
         paths:
@@ -19,4 +21,3 @@ spec:
                 name: backend-service
                 port:
                   number: 5000
-                  

@@ -10,5 +10,5 @@ spec:
     - protocol: TCP # Protocol used for communication
       port: 5000 # Exposed port of the service
       targetPort: 5000 # Port on which the backend container is listening
-  type: LoadBalancer # change from ClusterIP to use AWS ALB
+  type: NodePort # change from ClusterIP to use AWS ALB
 
