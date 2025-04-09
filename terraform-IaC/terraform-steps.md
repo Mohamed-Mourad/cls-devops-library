@@ -9,19 +9,39 @@ This guide outlines the steps to build an AWS EKS environment with Terraform, in
 Start by creating the following basic directory structure:
 
 ```
-terraform-eks/
+terraform-IaC/
 ├── environments/
-│   └── dev/
-│       ├── backend.tf
+│   ├── dev/
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   ├── outputs.tf
+│   │   └── backend.tf
+│   └── prod/
 │       ├── main.tf
+│       ├── variables.tf
 │       ├── outputs.tf
-│       └── variables.tf
+│       └── backend.tf
 └── modules/
     ├── vpc/
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
     ├── efs/
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
     ├── eks/
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
     ├── node-group/
+    │   ├── main.tf
+    │   ├── variables.tf
+    │   └── outputs.tf
     └── load-balancer/
+        ├── main.tf
+        ├── variables.tf
+        └── outputs.tf
 ```
 
 ---
