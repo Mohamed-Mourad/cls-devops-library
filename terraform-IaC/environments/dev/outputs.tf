@@ -34,7 +34,7 @@ output "dev_eks_cluster_name" {
 
 output "dev_eks_cluster_oidc_provider_arn" {
   description = "The OIDC Provider ARN for the dev EKS cluster (for IRSA)."
-  value       = module.eks.oidc_provider_arn
+  value       = module.eks.cluster_oidc_provider_arn
 }
 
 output "dev_load_balancer_dns_name" {

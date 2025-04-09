@@ -119,8 +119,10 @@ locals {
   default_action = var.create_default_target_group ? [{
     type             = "forward"
     target_group_arn = aws_lb_target_group.default[0].arn
+    fixed_response   = null
     }] : [{ # If no default TG, return a simple 503 response
     type = "fixed-response"
+    target_group_arn = null
     fixed_response = {
       content_type = "text/plain"
       message_body = "Service Unavailable - No default target group configured."
