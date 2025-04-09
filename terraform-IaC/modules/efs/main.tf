@@ -97,7 +97,7 @@ resource "aws_security_group_rule" "allow_all_outbound" {
 # Create one mount target for each private subnet provided
 resource "aws_efs_mount_target" "main" {
   # Use for_each keyed by subnet ID for stable management
-  for_each = toset(var.private_subnet_ids)
+  for_each = { for k, v in var.private_subnet_ids : k => v }
 
   file_system_id  = aws_efs_file_system.main.id
   subnet_id       = each.value

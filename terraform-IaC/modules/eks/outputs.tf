@@ -37,7 +37,7 @@ output "cluster_oidc_issuer_url" {
 # Output the ARN of the OIDC provider, whether newly created or pre-existing
 output "cluster_oidc_provider_arn" {
   description = "The ARN of the IAM OpenID Connect provider."
-  value       = coalesce(aws_iam_openid_connect_provider.oidc_provider[0].arn, data.aws_iam_openid_connect_provider.oidc_provider_check.arn)
+  value       = aws_iam_openid_connect_provider.oidc_provider.arn
 }
 
 output "cluster_security_group_id" {

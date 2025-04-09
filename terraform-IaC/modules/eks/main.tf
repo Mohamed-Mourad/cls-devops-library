@@ -84,23 +84,8 @@ resource "aws_eks_cluster" "main" {
 # --- IAM OIDC Provider for IRSA ---
 # Allows Kubernetes service accounts to assume IAM roles
 
-# Reference the OIDC issuer URL from the created cluster
-data "aws_iam_openid_connect_provider" "oidc_provider_check" {
-  # Check if provider for this issuer URL already exists (e.g., created manually or by another tool)
-  url = aws_eks_cluster.main.identity[0].oidc[0].issuer
-}
-
-# Newer AWS provider versions handle thumbprint automatically.
-# Older versions/specific scenarios might need manual thumbprint handling:
-# data "tls_certificate" "eks_oidc_thumbprint" {
-#   url = aws_eks_cluster.main.identity[0].oidc[0].issuer
-# }
-
 resource "aws_iam_openid_connect_provider" "oidc_provider" {
-  # Only create if it doesn't exist (using the data source check)
-  count = data.aws_iam_openid_connect_provider.oidc_provider_check.arn == "" ? 1 : 0
-
-  url             = aws_eks_cluster.main.identity[0].oidc[0].issuer
+ url             = aws_eks_cluster.main.identity[0].oidc[0].issuer
   client_id_list  = ["sts.amazonaws.com"]
   # thumbprint_list = [data.tls_certificate.eks_oidc_thumbprint.certificates[0].sha1_fingerprint] # If manual thumbprint needed
 
