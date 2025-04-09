@@ -20,7 +20,7 @@ This repository contains everything you need for a complete CI/CD workflow, infr
 │   │   └── dev/                 # Kustomize overlay for development environment
 │   └── README.md                # Kubernetes manifests & Kustomize usage guide
 │
-├── terraform/
+├── terraform-IaC/
 │   ├── eks-cluster/             # Terraform for AWS EKS cluster
 │   ├── efs-storage/             # Terraform for Amazon EFS setup
 │   └── README.md                # Terraform deployment guide
