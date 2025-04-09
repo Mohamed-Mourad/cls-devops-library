@@ -4,6 +4,7 @@ pipeline {
         K8S_NAMESPACE = 'k8s'
         IMAGE_NAME = 'mohamedmorad/library-project'
         IMAGE_TAG = 'latest'
+        EFS_FILESYSTEM_ID = 'fs-xxxxxxxxxxxxxxxxx'
     }
     stages {
         stage('Clone Repository') {
@@ -72,28 +73,44 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to EKS') {
+        stage('Deploy to EKS using Kustomize') {
             steps {
-                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding',
-                credentialsId: 'aws-credentials']]) {
+                withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', credentialsId: 'aws-credentials']]) {
                     withEnv(["KUBECONFIG=${env.WORKSPACE}/kubeconfig_tmp"]) {
                         sh '''
-                            echo "Applying persistent volume and claims..."
-                            kubectl apply -f k8s/efs-storageclass.yaml
-                            kubectl apply -f k8s/efs-pv.yaml
-                            kubectl apply -f k8s/efs-pvc.yaml
-                            
-                            echo "Deploying Postgres resources..."
-                            kubectl apply -f k8s/postgres.yaml -n ${K8S_NAMESPACE}
-                            kubectl apply -f k8s/postgres-service.yaml -n ${K8S_NAMESPACE}
-                            kubectl apply -f k8s/postgres-secret.yaml -n ${K8S_NAMESPACE}
-                            
-                            echo "Deploying Backend resources..."
-                            kubectl apply -f k8s/backend.yaml -n ${K8S_NAMESPACE}
-                            kubectl apply -f k8s/backend-service.yaml -n ${K8S_NAMESPACE}
-                            
-                            echo "Deploying Ingress configuration..."
-                            kubectl apply -f k8s/ingress.yaml -n ${K8S_NAMESPACE}
+                            echo "Applying manifests using Kustomize to namespace ${K8S_NAMESPACE}..."
+                            # Ensure EFS_FILESYSTEM_ID is exported for envsubst
+                            export EFS_FILESYSTEM_ID
+
+                            # --- Check/Install Tools (Add only if needed on your agent) ---
+                            if ! command -v kustomize &> /dev/null; then
+                                echo "Kustomize not found. Installing..."
+                                # Replace with appropriate install for your Jenkins agent OS/Arch
+                                curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+                                sudo mv kustomize /usr/local/bin/
+                                echo "Kustomize installed."
+                            fi
+
+                            if ! command -v envsubst &> /dev/null; then
+                                echo "envsubst not found. Please install 'gettext' package on the Jenkins agent."
+                                # Example for Debian/Ubuntu: sudo apt-get update && sudo apt-get install -y gettext-base
+                                exit 1 # Fail if envsubst is missing
+                            fi
+                            # --- End Tool Check ---
+
+                            echo "EFS Filesystem ID to use: ${EFS_FILESYSTEM_ID}"
+                            if [ -z "${EFS_FILESYSTEM_ID}" ] || [ "${EFS_FILESYSTEM_ID}" = "fs-xxxxxxxxxxxxxxxxx" ]; then
+                                echo "Error: EFS_FILESYSTEM_ID is not set or is still the placeholder value."
+                                exit 1
+                            fi
+
+
+                            echo "Building Kustomize overlay and applying to namespace ${K8S_NAMESPACE}..."
+                            # Build the overlay for 'dev'
+                            # Build the overlay, substitute EFS ID in StorageClass, apply
+                            kustomize build k8s/overlays/dev | envsubst '\$EFS_FILESYSTEM_ID' | kubectl apply -n ${K8S_NAMESPACE} -f -
+
+                            echo "All resources applied via Kustomize to namespace ${K8S_NAMESPACE}."
                         '''
                     }
                 }
@@ -130,6 +147,10 @@ pipeline {
         }
         failure {
             echo 'CD Pipeline failed. Please review the logs.'
+        }
+        always {
+            // Clean up temporary kubeconfig
+            sh 'rm -f ./kubeconfig_tmp'
         }
     }
 }
