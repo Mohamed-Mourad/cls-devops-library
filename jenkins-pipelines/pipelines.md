@@ -1,4 +1,4 @@
-# Jenkins CI/CD Pipelines for Library Project
+# Jenkins CI/CD Pipelines Overview
 
 This repository contains two Jenkins pipeline scripts to automate the build and deployment of the **Library Project**.
 
