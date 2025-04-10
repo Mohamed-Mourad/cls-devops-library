@@ -37,10 +37,10 @@ output "dev_eks_cluster_oidc_provider_arn" {
   value       = module.eks.cluster_oidc_provider_arn
 }
 
-output "dev_load_balancer_dns_name" {
-  description = "The DNS name of the dev application load balancer."
-  value       = module.load_balancer.lb_dns_name
-}
+# output "dev_load_balancer_dns_name" {
+#   description = "The DNS name of the dev application load balancer."
+#   value       = module.load_balancer.lb_dns_name
+# }
 
 output "dev_kubeconfig_command" {
  description = "Command to update kubeconfig for the dev cluster."

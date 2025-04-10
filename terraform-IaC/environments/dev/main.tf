@@ -139,38 +139,39 @@ module "primary_workers" {
 }
 
 # --- Load Balancer Module Instantiation ---
+# ---- LET THE CONTROLLER CREATE THE LB ----
 # Creates the Application Load Balancer, Listeners, Target Group, and Security Group.
 # Depends on VPC module outputs for network placement.
 
-module "load_balancer" {
-  source = "../../modules/load-balancer"
+# module "load_balancer" {
+#   source = "../../modules/load-balancer"
 
-  # --- Module Inputs ---
-  project_name = var.project_name
-  environment  = var.environment
-  tags         = var.common_tags
+#   # --- Module Inputs ---
+#   project_name = var.project_name
+#   environment  = var.environment
+#   tags         = var.common_tags
 
-  # Inputs from VPC module output:
-  vpc_id            = module.vpc.vpc_id             # LB lives in this VPC
-  public_subnet_ids = module.vpc.public_subnet_ids # Place LB in public subnets
+#   # Inputs from VPC module output:
+#   vpc_id            = module.vpc.vpc_id             # LB lives in this VPC
+#   public_subnet_ids = module.vpc.public_subnet_ids # Place LB in public subnets
 
-  # Optional inputs (using module defaults suitable for dev environment):
-  # - internet-facing Application LB
-  # - HTTP listener enabled on port 80
-  # - Default target group created (instance type, port 80)
-  # - Ingress from 0.0.0.0/0 allowed
-  # - No HTTPS, No Access Logs, No Deletion Protection
+#   # Optional inputs (using module defaults suitable for dev environment):
+#   # - internet-facing Application LB
+#   # - HTTP listener enabled on port 80
+#   # - Default target group created (instance type, port 80)
+#   # - Ingress from 0.0.0.0/0 allowed
+#   # - No HTTPS, No Access Logs, No Deletion Protection
 
-  # To enable HTTPS, you would set:
-  # enable_https_listener = true
-  # acm_certificate_arn   = var.lb_acm_certificate_arn # Define this in variables.tf
+#   # To enable HTTPS, you would set:
+#   # enable_https_listener = true
+#   # acm_certificate_arn   = var.lb_acm_certificate_arn # Define this in variables.tf
 
-  # To enable access logs, you would set:
-  # enable_access_logs          = true
-  # access_logs_s3_bucket_name = var.lb_access_logs_bucket_name # Define this in variables.tf
+#   # To enable access logs, you would set:
+#   # enable_access_logs          = true
+#   # access_logs_s3_bucket_name = var.lb_access_logs_bucket_name # Define this in variables.tf
 
-  # To change target type for AWS Load Balancer Controller (IP targets), set:
-  # default_target_group_type = "ip"
+#   # To change target type for AWS Load Balancer Controller (IP targets), set:
+#   # default_target_group_type = "ip"
 
-  # Implicit dependency: Terraform knows this module depends on 'module.vpc'.
-}
+#   # Implicit dependency: Terraform knows this module depends on 'module.vpc'.
+# }
