@@ -18,10 +18,10 @@ output "lb_arn_suffix" {
   value       = aws_lb.main.arn_suffix
 }
 
-output "lb_security_group_id" {
-  description = "The ID of the security group attached to the load balancer."
-  value       = aws_security_group.lb.id
-}
+# output "lb_security_group_id" {
+#   description = "The ID of the security group attached to the load balancer."
+#   value       = aws_security_group.lb.id
+# }
 
 output "http_listener_arn" {
   description = "The ARN of the HTTP listener (if created)."

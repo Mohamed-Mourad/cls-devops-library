@@ -8,50 +8,50 @@ locals {
 }
 
 # --- Security Group for Load Balancer ---
-resource "aws_security_group" "lb" {
-  name        = "${local.lb_name}-sg"
-  description = "Security group for the ${var.load_balancer_type} load balancer"
-  vpc_id      = var.vpc_id
-  tags        = merge(local.common_tags, { Name = "${local.lb_name}-sg" })
-}
+# resource "aws_security_group" "lb" {
+#   name        = "${local.lb_name}-sg"
+#   description = "Security group for the ${var.load_balancer_type} load balancer"
+#   vpc_id      = var.vpc_id
+#   tags        = merge(local.common_tags, { Name = "${local.lb_name}-sg" })
+# }
 
 # --- Ingress Rules ---
-resource "aws_security_group_rule" "allow_http_ingress" {
-  count = var.enable_http_listener ? 1 : 0
+# resource "aws_security_group_rule" "allow_http_ingress" {
+#   count = var.enable_http_listener ? 1 : 0
 
-  type              = "ingress"
-  protocol          = "tcp"
-  from_port         = 80
-  to_port           = 80
-  cidr_blocks       = var.ingress_cidr_blocks
-  security_group_id = aws_security_group.lb.id
-  description       = "Allow HTTP traffic"
-}
+#   type              = "ingress"
+#   protocol          = "tcp"
+#   from_port         = 80
+#   to_port           = 80
+#   cidr_blocks       = var.ingress_cidr_blocks
+#   security_group_id = aws_security_group.lb.id
+#   description       = "Allow HTTP traffic"
+# }
 
-resource "aws_security_group_rule" "allow_https_ingress" {
-  count = var.enable_https_listener ? 1 : 0
+# resource "aws_security_group_rule" "allow_https_ingress" {
+#   count = var.enable_https_listener ? 1 : 0
 
-  type              = "ingress"
-  protocol          = "tcp"
-  from_port         = 443
-  to_port           = 443
-  cidr_blocks       = var.ingress_cidr_blocks
-  security_group_id = aws_security_group.lb.id
-  description       = "Allow HTTPS traffic"
-}
+#   type              = "ingress"
+#   protocol          = "tcp"
+#   from_port         = 443
+#   to_port           = 443
+#   cidr_blocks       = var.ingress_cidr_blocks
+#   security_group_id = aws_security_group.lb.id
+#   description       = "Allow HTTPS traffic"
+# }
 
 # --- Egress Rule ---
 # Allow LB to talk to any destination (targets like instances/pods in VPC)
-resource "aws_security_group_rule" "allow_all_egress" {
-  type              = "egress"
-  protocol          = "-1" # All protocols
-  from_port         = 0
-  to_port           = 0
-  cidr_blocks       = ["0.0.0.0/0"] # Allow outbound to anywhere
-  # Alternatively restrict to VPC CIDR: cidr_blocks = [data.aws_vpc.selected.cidr_block] (requires adding data source for VPC)
-  security_group_id = aws_security_group.lb.id
-  description       = "Allow all outbound traffic from LB"
-}
+# resource "aws_security_group_rule" "allow_all_egress" {
+#   type              = "egress"
+#   protocol          = "-1" # All protocols
+#   from_port         = 0
+#   to_port           = 0
+#   cidr_blocks       = ["0.0.0.0/0"] # Allow outbound to anywhere
+   # Alternatively restrict to VPC CIDR: cidr_blocks = [data.aws_vpc.selected.cidr_block] (requires adding data source for VPC)
+#   security_group_id = aws_security_group.lb.id
+#   description       = "Allow all outbound traffic from LB"
+# }
 
 
 # --- Load Balancer Resource ---
@@ -59,7 +59,7 @@ resource "aws_lb" "main" {
   name               = local.lb_name
   internal           = var.internal
   load_balancer_type = var.load_balancer_type
-  security_groups    = [aws_security_group.lb.id]
+  # security_groups    = [aws_security_group.lb.id]
   subnets            = var.public_subnet_ids # Place LB in public subnets
 
   enable_deletion_protection = var.enable_deletion_protection
@@ -86,7 +86,6 @@ resource "aws_lb" "main" {
 resource "aws_lb_target_group" "default" {
   count = var.create_default_target_group ? 1 : 0
 
-  name_prefix = "${local.lb_name}-def-"
   port        = var.default_target_group_port
   protocol    = var.default_target_group_protocol
   vpc_id      = var.vpc_id
