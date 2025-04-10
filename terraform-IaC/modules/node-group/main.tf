@@ -77,10 +77,6 @@ resource "aws_eks_node_group" "main" {
   }
 
   labels = merge(
-    { # Default labels indicating the node group
-      "eks.amazonaws.com/nodegroup"      = var.node_group_name
-      "eks.amazonaws.com/capacityType"   = var.capacity_type
-    },
     var.kubernetes_labels # Merge custom labels
   )
 

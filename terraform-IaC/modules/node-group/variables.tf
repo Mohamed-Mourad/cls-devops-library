@@ -49,7 +49,7 @@ variable "ami_type" {
 variable "disk_size" {
   description = "Disk size in GiB for worker node root volumes."
   type        = number
-  default     = 2 # GiB
+  default     = 4 # GiB
 }
 
 variable "desired_size" {
