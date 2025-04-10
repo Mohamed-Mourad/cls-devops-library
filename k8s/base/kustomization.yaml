@@ -3,7 +3,6 @@ kind: Kustomization
 
 resources:
   - efs-storageclass.yaml
-  - efs-pv.yaml
   - efs-pvc.yaml
   - postgres-secret.yaml
   - postgres.yaml
