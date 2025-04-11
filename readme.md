@@ -16,13 +16,13 @@ This repository contains everything you need for a complete CI/CD workflow, infr
 ├── jenkins-pipelines/
 │   ├── ci-pipeline.groovy       # Jenkins CI pipeline (build & push Docker image)
 │   ├── cd-pipeline.groovy       # Jenkins CD pipeline (deploy to EKS)
-│   └── pipelines.md                # Jenkins pipelines usage documentation
+│   └── pipelines.md             # Jenkins pipelines usage documentation
 │
 ├── k8s/
 │   ├── base/                    # Base Kubernetes manifests
 │   ├── overlays/
 │   │   └── dev/                 # Kustomize overlay for development environment
-│   └── k8s.md                # Kubernetes manifests & Kustomize usage guide
+│   └── k8s.md                   # Kubernetes manifests & Kustomize usage guide
 │
 ├── terraform-IaC/
 │   ├── environments/            # Separate envs for development & deployment
