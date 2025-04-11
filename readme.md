@@ -1,6 +1,6 @@
 # 📚 Library Project - DevOps Setup
 
-Welcome to the **Library Project**!  
+Welcome to the **DevOps Engineer Diploma Final Project**!  
 This repository contains everything you need for a complete CI/CD workflow, infrastructure management, and Kubernetes deployment.
 
 ---
