@@ -16,20 +16,27 @@ This repository contains everything you need for a complete CI/CD workflow, infr
 ├── jenkins-pipelines/
 │   ├── ci-pipeline.groovy       # Jenkins CI pipeline (build & push Docker image)
 │   ├── cd-pipeline.groovy       # Jenkins CD pipeline (deploy to EKS)
-│   └── README.md                # Jenkins pipelines usage documentation
+│   └── pipelines.md                # Jenkins pipelines usage documentation
 │
 ├── k8s/
 │   ├── base/                    # Base Kubernetes manifests
 │   ├── overlays/
 │   │   └── dev/                 # Kustomize overlay for development environment
-│   └── README.md                # Kubernetes manifests & Kustomize usage guide
+│   └── k8s.md                # Kubernetes manifests & Kustomize usage guide
 │
 ├── terraform-IaC/
-│   ├── eks-cluster/             # Terraform for AWS EKS cluster
-│   ├── efs-storage/             # Terraform for Amazon EFS setup
-│   └── README.md                # Terraform deployment guide
+│   ├── environments/            # Separate envs for development & deployment
+│   │   ├── dev/                  
+│   │   └── prod/                 
+│   ├── modules/                 # Terraform for Amazon AWS setup
+│   │   ├── efs/
+│   │   ├── eks/
+│   │   ├── load-balancer/       # Redundant - decided to automate with LB-Cotroller - Left for reference
+│   │   ├── node-group/                  
+│   │   └── vpc/ 
+│   └── terraform-steps.md       # Terraform deployment guide
 │
-└── README.md                    # (This file) Project overview and getting started
+└── readme.md                    # Project overview and getting started
 ```
 
 ---
