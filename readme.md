@@ -9,7 +9,7 @@ This repository contains everything you need for a complete CI/CD workflow, infr
 
 ```bash
 .
-├── initialization-stage/      # Required configurations before the first CD run
+├── initialization-stage/        # Required configurations before the first CD run
 │   ├── LB-Controller.md       
 │   ├── OIDC-Config.md
 │
