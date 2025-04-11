@@ -12,7 +12,7 @@ This repository contains everything you need for a complete CI/CD workflow, infr
 ├── initialization-stage/      # Required configurations before the first CD run
 │   ├── LB-Controller.md       
 │   ├── OIDC-Config.md
-|
+│
 ├── jenkins-pipelines/
 │   ├── ci-pipeline.groovy       # Jenkins CI pipeline (build & push Docker image)
 │   ├── cd-pipeline.groovy       # Jenkins CD pipeline (deploy to EKS)
